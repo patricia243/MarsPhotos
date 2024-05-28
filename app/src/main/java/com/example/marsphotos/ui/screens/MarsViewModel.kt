@@ -19,6 +19,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.marsphotos.netWork.MarsApiService
+import kotlinx.coroutines.launch
+import java.io.IOException
+sealed interface MarsUiState {
+    data class Success(val photos: String) : MarsUiState
+    object Error : MarsUiState
+    object Loading : MarsUiState
+}
 
 class MarsViewModel : ViewModel() {
     /** The mutable State that stores the status of the most recent request */
@@ -30,13 +39,21 @@ class MarsViewModel : ViewModel() {
      */
     init {
         getMarsPhotos()
+
     }
 
     /**
      * Gets Mars photos information from the Mars API Retrofit service and updates the
      * [MarsPhoto] [List] [MutableList].
      */
-    fun getMarsPhotos() {
-        marsUiState = "Set the Mars API status response here!"
+
+    fun getMarsPhotos() = try {
+        val listResult = MarsApiService.MarsApi.retrofitService.getPhotos()
+        marsUiState = MarsUiState.Success(listResult).toString()
+    } catch (e: IOException) {
+        marsUiState = MarsUiState.Error.toString()
+
     }
-}
+
+    }
+
