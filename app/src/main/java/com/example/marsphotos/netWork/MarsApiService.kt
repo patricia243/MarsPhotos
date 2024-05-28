@@ -6,22 +6,32 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
 import retrofit2.http.GET
+import kotlin.lazy as lazy1
 
-class MarsApiService {
-    private val BASE_URL = "https://android-kotlin-fun-mars-server.appspot.com"
+private const val BASE_URL = "https://android-kotlin-fun-mars-server.appspot.com"
 
-    private val retrofit = Retrofit.Builder()
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-        .baseUrl(BASE_URL)
-        .build()
-    interface MarsApiService {
-        @GET("photos")
-        suspend fun getPhotos(): List<MarsPhoto>
-    }
-    object MarsApi {
-        val retrofitService : MarsApiService by lazy {
-            retrofit.create(MarsApiService::class.java)
-        }
+/**
+ * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
+ */
+private val retrofit = Retrofit.Builder()
+    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .baseUrl(BASE_URL)
+    .build()
+
+/**
+ * Retrofit service object for creating api calls
+ */
+interface MarsApiService {
+    @GET("photos")
+    suspend fun getPhotos(): List<MarsPhoto>
+}
+
+/**
+ * A public Api object that exposes the lazy-initialized Retrofit service
+ */
+object MarsApi {
+    val retrofitService: MarsApiService by lazy1 {
+        retrofit.create(MarsApiService::class.java)
     }
 }
 

@@ -34,23 +34,9 @@ class MarsViewModel : ViewModel() {
     var marsUiState: String by mutableStateOf("")
         private set
 
-    /**
-     * Call getMarsPhotos() on init so we can display status immediately.
-     */
-    init {
-        getMarsPhotos()
 
-    }
-
-    /**
-     * Gets Mars photos information from the Mars API Retrofit service and updates the
-     * [MarsPhoto] [List] [MutableList].
-     */
-
-    fun getMarsPhotos() = try {
-        val listResult = MarsApiService.MarsApi
-            .retrofitService
-            .getPhotos()
+    suspend fun getMarsPhotos() = try {
+        val listResult = MarsApiService.MarsApi.retrofitService.getPhotos()
         marsUiState = MarsUiState.Success(
             "Success: ${listResult.size} Mars photos retrieved"
         ).toString()
