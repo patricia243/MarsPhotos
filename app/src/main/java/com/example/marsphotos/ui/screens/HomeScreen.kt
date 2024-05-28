@@ -23,8 +23,9 @@ import com.example.marsphotos.ui.theme.MarsPhotosTheme
 
 @Composable
 fun HomeScreen(
-    marsUiState: MarsUiState,
-    modifier: Modifier = Modifier
+    marsUiState: String,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues
 ) {
     when (marsUiState) {
         is MarsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
